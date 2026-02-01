@@ -53,6 +53,19 @@ def go(config: DictConfig):
             ##################
             # Implement here #
             ##################
+            _ = mlflow.run(
+              f"src/basic_cleaning",
+              "main",
+              env_manager="conda",
+              parameters={
+                "input_artifact": "sample.csv:v0",
+                "output_artifact": "clean_data.csv",
+                "output_type": "clean_data",
+                "output_description": "Drop outliers and convert last review to datetime",
+                "min_price": config["etl"]["min_price"],
+                "max_price": config["etl"]["max_price"],
+              }
+            )
             pass
 
         if "data_check" in active_steps:

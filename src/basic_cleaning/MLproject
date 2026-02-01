@@ -6,7 +6,7 @@ entry_points:
     parameters:
 
       input_artifact:
-        description: Ininital artifact to be cleaned
+        description: Initial artifact to be cleaned
         type: string
 
       output_artifact:
@@ -31,4 +31,4 @@ entry_points:
 
 
     command: >-
-        python run.py  --input_artifact {input_artifact}  --output_artifact {output_artifact}  --output_type {output_type}  --output_description {output_description}  --min_price {min_price}  --max_price {max_price} 
+        python run.py  --input_artifact {input_artifact}  --output_artifact {output_artifact}  --output_type {output_type}  --output_description {output_description}  --min_price {min_price}  --max_price {max_price}
