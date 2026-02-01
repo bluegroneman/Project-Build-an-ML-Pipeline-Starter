@@ -59,8 +59,8 @@ def go(config: DictConfig):
               env_manager="conda",
               parameters={
                 "input_artifact": "sample.csv:v0",
-                "output_artifact": "clean_data.csv",
-                "output_type": "clean_data",
+                "output_artifact": "clean_sample.csv",
+                "output_type": "clean_sample",
                 "output_description": "Drop outliers and convert last review to datetime",
                 "min_price": config["etl"]["min_price"],
                 "max_price": config["etl"]["max_price"],
@@ -72,6 +72,18 @@ def go(config: DictConfig):
             ##################
             # Implement here #
             ##################
+            _ = mlflow.run(
+              "src/data_check",
+              "main",
+              env_manager="conda",
+              parameters={
+                "csv": "clean_sample.csv:latest",
+                "ref": "clean_sample.csv:reference",
+                "kl_threshold": config["data_check"]["kl_threshold"],
+                "min_price": config["etl"]["min_price"],
+                "max_price": config["etl"]["max_price"],
+              }
+            )
             pass
 
         if "data_split" in active_steps:
