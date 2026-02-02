@@ -50,9 +50,6 @@ def go(config: DictConfig):
             )
 
         if "basic_cleaning" in active_steps:
-            ##################
-            # Implement here #
-            ##################
             _ = mlflow.run(
               f"src/basic_cleaning",
               "main",
@@ -69,9 +66,6 @@ def go(config: DictConfig):
             pass
 
         if "data_check" in active_steps:
-            ##################
-            # Implement here #
-            ##################
             _ = mlflow.run(
               "src/data_check",
               "main",
@@ -87,9 +81,16 @@ def go(config: DictConfig):
             pass
 
         if "data_split" in active_steps:
-            ##################
-            # Implement here #
-            ##################
+            _ = mlflow.run(
+              f"{config['main']['components_repository']}/train_val_test_split",
+              'main',
+              parameters={
+                "input": "clean_sample.csv:latest",
+                "test_size": config["modeling"]["test_size"],
+                "random_seed": config["modeling"]["random_seed"],
+                "stratify_by": config["modeling"]["stratify_by"],
+              }
+            )
             pass
 
         if "train_random_forest" in active_steps:
@@ -101,18 +102,31 @@ def go(config: DictConfig):
 
             # NOTE: use the rf_config we just created as the rf_config parameter for the train_random_forest
             # step
-
-            ##################
-            # Implement here #
-            ##################
+            _ = mlflow.run(
+              "src/train_random_forest",
+              "main",
+              parameters={
+                "trainval_artifact": "trainval_data.csv:latest",
+                "val_size": config["modeling"]["val_size"],
+                "random_seed": config["modeling"]["random_seed"],
+                "stratify_by": config["modeling"]["stratify_by"],
+                "rf_config": rf_config,
+                "max_tfidf_features": config["modeling"]["max_tfidf_features"],
+                "output_artifact": "random_forest_export"
+              }
+            )
 
             pass
 
         if "test_regression_model" in active_steps:
-
-            ##################
-            # Implement here #
-            ##################
+            _ = mlflow.run(
+              f"{config['main']['components_repository']}/test_regression_model",
+              "main",
+              parameters={
+                "mlflow_model": "random_forest_export:prod",
+                "test_dataset": "test_data.csv:latest"
+              }
+            )
 
             pass
 

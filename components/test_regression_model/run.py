@@ -12,6 +12,16 @@ from sklearn.metrics import mean_absolute_error
 from wandb_utils.log_artifact import log_artifact
 
 
+def delta_date_feature(dates, reference_date=None):
+    """
+    Given a 2d array containing dates (in any format recognized by pd.to_datetime), it returns the delta in days
+    between each date and the reference date.
+    If reference_date is None, it uses the maximum date in the input as the reference date.
+    """
+    date_sanitized = pd.DataFrame(dates).apply(pd.to_datetime)
+    return date_sanitized.apply(lambda d: (d.max() - d).dt.days, axis=0).to_numpy()
+
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
 logger = logging.getLogger()
 
@@ -56,14 +66,14 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--mlflow_model",
-        type=str, 
+        type=str,
         help="Input MLFlow model",
         required=True
     )
 
     parser.add_argument(
         "--test_dataset",
-        type=str, 
+        type=str,
         help="Test dataset",
         required=True
     )
